@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  php:
+    build:
+      context: docker/dockerfiles
+      dockerfile: PhpDocker
+      args:
+        - DOCKER_USERNAME=${USERNAME}
+        - DOCKER_UID=${USERID}
+    volumes:
+      - ./api/CV-page:/var/www/CV-page
+      - ./api/ReqRes-Contractor:/var/www/ReqRes-Contractor
+      - ./docker/php-ini:/usr/local/etc/php
+      - ./docker/xdebug-ini/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    container_name: ${CONTAINER_NAME_API}
+    restart: unless-stopped
+    networks:
+      - DevEnvNetwork
+    tty: true
+    stdin_open: true
+    links:
+      - mysql:database
+    environment:
+      PHP_INI_SCAN_DIR: "/usr/local/etc/php/custom.d:/usr/local/etc/php/conf.d"
+    depends_on:
+      - mysql
+
+  nginx:
+    build:
+      context: docker/dockerfiles
+      dockerfile: NginxDocker
+    container_name: ${CONTAINER_NAME_NGINX}
+    networks:
+      - DevEnvNetwork
+    links:
+      - mysql:database
+    ports:
+      - 8080:8080
+    volumes:
+      - ./docker/sites:/etc/nginx/conf.d
+      - ./api:/var/www
+    depends_on:
+      - php
+
+  mysql:
+    build:
+      context: docker/dockerfiles
+      dockerfile: MysqlDocker
+      args:
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        - MYSQL_DEFAULT_DATABASE=${MYSQL_DEFAULT_DATABASE}
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    container_name: ${CONTAINER_NAME_MYSQL}
+    networks:
+      - DevEnvNetwork
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/mysql:/etc/mysql/conf.d
+    restart: always
+    #environment:
+    #  MYSQL_USER: default_user
+    #  MYSQL_PASSWORD: default_password
+    #  MYSQL_ROOT_PASSWORD: default_database
+    #  MYSQL_DATABASE: toor
+
+#    entrypoint:
+#      sh -c "
+#      echo '
+#      CREATE DATABASE IF NOT EXISTS fitness_language;
+#      CREATE DATABASE IF NOT EXISTS fitness_storage;
+#      CREATE DATABASE IF NOT EXISTS fitness_nutrition;
+#      CREATE DATABASE IF NOT EXISTS fitness_workout;
+#      CREATE DATABASE IF NOT EXISTS fitness_chat;
+#
+#      GRANT ALL privileges on *.* to fitness;
+#      FLUSH PRIVILEGES;
+#      ' > /docker-entrypoint-initdb.d/init.sql;
+#      /usr/local/bin/docker-entrypoint.sh --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+#      "
+
+networks:
+  DevEnvNetwork:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        #- subnet: 10.0.0.0/24
+        - subnet: 172.29.0.0/16
+
+volumes:
+  src:
+    name: "src_volume"
