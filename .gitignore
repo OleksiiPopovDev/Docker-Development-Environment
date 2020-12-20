@@ -2,6 +2,14 @@
 .env
 
 /docker/php-ini/conf.d/
+/api/.bash_history
+/api/.local
+/api/.local/*
+/api/.config
+/api/.config/*
+/api/.cache
+/api/.cache/*
+
 
 CV-page/
 CV-page/*

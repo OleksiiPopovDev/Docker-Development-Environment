@@ -17,15 +17,15 @@ RUN echo ${MYSQL_PASSWORD}
 RUN echo ${MYSQL_DEFAULT_DATABASE}
 RUN echo ${MYSQL_ROOT_PASSWORD}
 
-RUN echo 'CREATE DATABASE IF NOT EXISTS CV-page;' > /docker-entrypoint-initdb.d/init.sql;
-RUN echo 'CREATE DATABASE IF NOT EXISTS ReqRes-Contractor;' > /docker-entrypoint-initdb.d/init.sql;
+RUN echo 'CREATE DATABASE IF NOT EXISTS CV-page;' >> /docker-entrypoint-initdb.d/init.sql;
+RUN echo 'CREATE DATABASE IF NOT EXISTS ReqRes-Contractor;' >> /docker-entrypoint-initdb.d/init.sql;
 
-RUN echo 'GRANT ALL privileges on *.* to ${MYSQL_USER};' > /docker-entrypoint-initdb.d/init.sql;
-RUN echo 'FLUSH PRIVILEGES;' > /docker-entrypoint-initdb.d/init.sql;
+RUN echo 'GRANT ALL privileges on *.* to ${MYSQL_USER};' >> /docker-entrypoint-initdb.d/init.sql;
+RUN echo 'FLUSH PRIVILEGES;' >> /docker-entrypoint-initdb.d/init.sql;
 
 #RUN /usr/local/bin/docker-entrypoint.sh --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-EXPOSE 3306 33060
+EXPOSE 3306 33061
 CMD ["mysqld"]
