@@ -1,6 +1,7 @@
 .idea
 .env
 
+/docker/sites/*
 /docker/php-ini/conf.d/
 /api/.bash_history
 /api/.local
@@ -11,7 +12,4 @@
 /api/.cache/*
 
 
-CV-page/
-CV-page/*
-ReqRes-Contractor/
-ReqRes-Contractor/*
+/api/*
