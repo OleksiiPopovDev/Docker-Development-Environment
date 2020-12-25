@@ -2,4 +2,8 @@ textboxes:
   - title: Docker containers stats
     position: [ [ 0, 2 ], [ 79, 10 ] ]
     rate-ms: 1000
-    sample: docker stats AlekseyPopov-Dev-Env-api AlekseyPopov-Dev-Env-nginx AlekseyPopov-Dev-Env-mysql --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.PIDs}}"S
+    sample: docker stats
+          $(grep CONTAINER_NAME_API .env | cut -d '=' -f2)
+          $(grep CONTAINER_NAME_NGINX .env | cut -d '=' -f2)
+          $(grep CONTAINER_NAME_MYSQL .env | cut -d '=' -f2)
+      --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.PIDs}}"S
