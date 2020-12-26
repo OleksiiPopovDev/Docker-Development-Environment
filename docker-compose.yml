@@ -10,8 +10,6 @@ services:
         - DOCKER_UID=${USERID}
     volumes:
       - ./api:/var/www
-      #- ./api/CV-page:/var/www/CV-page
-      #- ./api/ReqRes-Contractor:/var/www/ReqRes-Contractor
       - ./docker/php-ini:/usr/local/etc/php
       - ./docker/xdebug-ini/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
       - ./docker/sampler:/usr/local/etc/sampler
@@ -49,11 +47,11 @@ services:
     build:
       context: docker/dockerfiles
       dockerfile: MysqlDocker
-      args:
-        - MYSQL_USER=${MYSQL_USER}
-        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-        - MYSQL_DEFAULT_DATABASE=${MYSQL_DEFAULT_DATABASE}
-        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      #args:
+        #- MYSQL_USER=${MYSQL_USER}
+        #- MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        #- MYSQL_DEFAULT_DATABASE=${MYSQL_DEFAULT_DATABASE}
+        #- MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     container_name: ${CONTAINER_NAME_MYSQL}
     networks:
       - DevEnvNetwork
@@ -61,27 +59,10 @@ services:
       - 33061:3306
     volumes:
       - ./docker/mysql:/etc/mysql/conf.d
+      - ./docker/databases:/var/databases
     restart: always
     environment:
-    #  MYSQL_USER: default_user
-    #  MYSQL_PASSWORD: default_password
-      MYSQL_ROOT_PASSWORD: toor
-    #  MYSQL_DATABASE: toor
-
-#    entrypoint:
-#      sh -c "
-#      echo '
-#      CREATE DATABASE IF NOT EXISTS fitness_language;
-#      CREATE DATABASE IF NOT EXISTS fitness_storage;
-#      CREATE DATABASE IF NOT EXISTS fitness_nutrition;
-#      CREATE DATABASE IF NOT EXISTS fitness_workout;
-#      CREATE DATABASE IF NOT EXISTS fitness_chat;
-#
-#      GRANT ALL privileges on *.* to fitness;
-#      FLUSH PRIVILEGES;
-#      ' > /docker-entrypoint-initdb.d/init.sql;
-#      /usr/local/bin/docker-entrypoint.sh --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-#      "
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
 
 networks:
   DevEnvNetwork:

@@ -2,6 +2,7 @@
 .env
 
 /docker/sites/*
+/docker/databases/*
 /docker/php-ini/conf.d/
 /api/.bash_history
 /api/.local
