@@ -88,6 +88,7 @@ if [ "$1" = "install" ]; then
       echo "USERID=$(id -u $(whoami))" >> .env && \
 
       docker-compose up --build -d
+      echo "Please wait!"
       sleep 30
 
       MYSQL_ROOT_PASS=$(grep MYSQL_ROOT_PASSWORD .env | cut -d '=' -f2)
@@ -117,7 +118,7 @@ if [ "$1" = "uninstall" ]; then
       DB_FILE_NAME=$(echo $project | cut -d '/' -f2 | sed 's/\-//g')
 
       DOCKER_FILE_CONF=docker/sites/$NGINX_FILE_NAME.conf
-      DOCKER_DB_CONF=docker/databases/$DB_FILE_NAME.conf
+      DOCKER_DB_CONF=docker/databases/$DB_FILE_NAME.db
 
       docker-compose down
 
