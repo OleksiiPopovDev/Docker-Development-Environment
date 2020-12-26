@@ -9,8 +9,9 @@ newProjectsList() {
 
     if [ ! -f "$FILE_CONF" ]; then
       echo "[$COUNTER] - "$PROJECT_NAME
-      COUNTER=$(( COUNTER + 1 ))
     fi
+
+    COUNTER=$(( COUNTER + 1 ))
   done
 
   if [ $COUNTER = 0 ]; then
@@ -68,7 +69,9 @@ if [ "$1" = "install" ]; then
       [ ! -d "api/" ] && mkdir api/
       [ ! -d "docker/sites/" ] && mkdir docker/sites/
 
-      cd api/ && git clone $repository && cd ../
+      cd api/
+      git clone $repository
+      cd ../
 
       [ -f "$PROJECT_FILE_CONF" ] && cp $PROJECT_FILE_CONF $DOCKER_FILE_CONF
 
