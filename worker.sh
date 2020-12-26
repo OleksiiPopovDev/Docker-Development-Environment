@@ -43,10 +43,32 @@ oldProjectsList() {
 
 [ "$1" = "monitor" ] && sampler --config ./docker/sampler/config.yml
 [ "$1" = "bash" ] && docker exec -it $(grep CONTAINER_NAME_API .env | cut -d '=' -f2) /bin/bash
-[ "$1" = "up" ] && docker-compose up --build
 [ "$1" = "start" ] && docker-compose start
 [ "$1" = "stop" ] && docker-compose stop
 [ "$1" = "generate" ] && tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo ''
+
+if [ "$1" = "up" ]; then
+  docker-compose up --build -d
+  [ ! -d "docker/databases/" ] && exit
+
+  echo "Please wait!"
+  sleep 30
+
+  MYSQL_ROOT_PASS=$(grep MYSQL_ROOT_PASSWORD .env | cut -d '=' -f2)
+  CONTAINER_MYSQL=$(grep CONTAINER_NAME_MYSQL .env | cut -d '=' -f2)
+  CONTAINER_API=$(grep CONTAINER_NAME_API .env | cut -d '=' -f2)
+
+  for config in docker/databases/*; do
+    DB_FILE_NAME=$(echo $config | cut -d '/' -f3 | sed 's/\-//g')
+    docker exec -it $CONTAINER_MYSQL sh -c "export MYSQL_PWD=$MYSQL_ROOT_PASS ; mysql -uroot < /var/databases/$DB_FILE_NAME"
+    echo "Configured Database of $DB_FILE_NAME"
+  done
+
+  for project in api/*; do
+    PROJECT_FOLDER=$(echo $project | cut -d '/' -f2)
+    docker exec -it $CONTAINER_API sh -c "cd $PROJECT_FOLDER && cp .env.example .env && composer install && php artisan key:generate && php artisan migrate && php artisan db:seed"
+  done
+fi
 
 if [ "$1" = "install" ]; then
   echo "List of new projects:"; echo;
@@ -92,7 +114,7 @@ if [ "$1" = "install" ]; then
       sleep 30
 
       MYSQL_ROOT_PASS=$(grep MYSQL_ROOT_PASSWORD .env | cut -d '=' -f2)
-      docker exec -it $(grep CONTAINER_NAME_MYSQL .env | cut -d '=' -f2) sh -c "mysql -uroot -p$MYSQL_ROOT_PASS < /var/databases/$DB_FILE_NAME.db"
+      docker exec -it $(grep CONTAINER_NAME_MYSQL .env | cut -d '=' -f2) sh -c "export MYSQL_PWD=$MYSQL_ROOT_PASS ; mysql -uroot < /var/databases/$DB_FILE_NAME.db"
       docker exec -it $(grep CONTAINER_NAME_API .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && cp .env.example .env && composer install && php artisan key:generate && php artisan migrate && php artisan db:seed"
 
       exit

@@ -37,7 +37,8 @@ shmop \
 sysvmsg \
 sysvsem \
 sysvshm \
-redis
+redis \
+xdebug
 
 # Create user and modify ssh config
 RUN useradd -u ${DOCKER_UID} -p "$(openssl passwd -1 ${DOCKER_PASSWORD})" ${DOCKER_USERNAME} \
