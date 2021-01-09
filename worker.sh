@@ -46,6 +46,8 @@ oldProjectsList() {
 [ "$1" = "start" ] && docker-compose start
 [ "$1" = "stop" ] && docker-compose stop
 [ "$1" = "generate" ] && tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo ''
+[ "$1" = "rebuild" ] && sh worker.sh down && sh worker.sh up
+[ "$1" = "down" ] && docker-compose down
 
 if [ "$1" = "up" ]; then
   docker-compose up --build -d
