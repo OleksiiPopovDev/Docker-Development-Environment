@@ -1,0 +1,60 @@
+FROM php:8.0-fpm
+
+MAINTAINER Popov Aleksey <popov.scar@gmail.com>
+
+WORKDIR /var/www
+
+ARG DOCKER_USERNAME
+ARG DOCKER_PASSWORD
+ARG DOCKER_UID
+
+# Get PHP extensions installer
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+
+# Install ssh and tools extensions
+RUN apt-get update && apt-get -y install iputils-ping \
+openssh-server \
+sudo \
+net-tools \
+mc \
+discus \
+htop \
+nano \
+git \
+wget \
+alsa-tools
+
+# Install PHP extensions
+RUN install-php-extensions \
+pdo_mysql \
+exif \
+bcmath \
+gd \
+bz2 \
+zip \
+pcntl \
+shmop \
+sysvmsg \
+sysvsem \
+sysvshm \
+redis \
+xdebug
+
+# Create user and modify ssh config
+RUN useradd -u ${DOCKER_UID} -p "$(openssl passwd -1 ${DOCKER_PASSWORD})" ${DOCKER_USERNAME} \
+&& echo "${DOCKER_USERNAME}	ALL=(ALL:ALL) ALL" >> /etc/sudoers \
+&& echo "${DOCKER_USERNAME}	ALL=(root) NOPASSWD: /etc/init.d/ssh" >> /etc/sudoers \
+&& usermod -d /var/www -s /bin/bash ${DOCKER_USERNAME} \
+&& echo "    IdentityFile ~/.ssh/id_rsa" >> /etc/ssh/ssh_config \
+&& wget https://github.com/sqshq/sampler/releases/download/v1.1.0/sampler-1.1.0-linux-amd64 -O /usr/local/bin/sampler \
+&& chmod +x /usr/local/bin/sampler
+
+
+# Get latest Composer
+COPY --from=composer:2.0.6 /usr/bin/composer /usr/bin/composer
+#COPY php.ini-dev /usr/local/etc/php/php.ini
+
+USER ${DOCKER_USERNAME}
+
+
+CMD ["php-fpm"]
