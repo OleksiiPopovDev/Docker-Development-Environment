@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM php:8.0-fpm
 
 MAINTAINER Popov Aleksey <popov.scar@gmail.com>
 
@@ -26,6 +26,7 @@ alsa-tools
 
 # Install PHP extensions
 RUN install-php-extensions \
+intl \
 pdo_mysql \
 exif \
 bcmath \
