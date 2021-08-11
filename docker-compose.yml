@@ -4,7 +4,7 @@ services:
   php:
     build:
       context: docker/dockerfiles
-      dockerfile: PhpDocker
+      dockerfile: Php8Docker
       args:
         - DOCKER_USERNAME=${USERNAME}
         - DOCKER_UID=${USERID}
@@ -47,11 +47,11 @@ services:
     build:
       context: docker/dockerfiles
       dockerfile: MysqlDocker
-      #args:
+        #args:
         #- MYSQL_USER=${MYSQL_USER}
         #- MYSQL_PASSWORD=${MYSQL_PASSWORD}
         #- MYSQL_DEFAULT_DATABASE=${MYSQL_DEFAULT_DATABASE}
-        #- MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      #- MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     container_name: ${CONTAINER_NAME_MYSQL}
     networks:
       - DevEnvNetwork
