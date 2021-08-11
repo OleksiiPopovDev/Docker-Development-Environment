@@ -26,6 +26,7 @@ alsa-tools
 
 # Install PHP extensions
 RUN install-php-extensions \
+intl \
 pdo_mysql \
 exif \
 bcmath \
