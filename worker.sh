@@ -23,7 +23,7 @@ newProjectsList() {
 
 oldProjectsList() {
   COUNTER=0;
-  for project in api/*; do
+  for project in src/*; do
     PROJECT_NAME=$(echo $project | cut -d '/' -f2 )
     FILE_NAME=$(echo $PROJECT_NAME | awk '{print tolower($0)}')
     FILE_CONF=docker/sites/$FILE_NAME.conf
@@ -66,7 +66,7 @@ if [ "$1" = "up" ]; then
     echo "Configured Database of $DB_FILE_NAME"
   done
 
-  for project in api/*; do
+  for project in src/*; do
     PROJECT_FOLDER=$(echo $project | cut -d '/' -f2)
     docker exec -it $CONTAINER_API sh -c "cd $PROJECT_FOLDER && cp .env.example .env && composer install && php artisan key:generate && php artisan migrate && php artisan db:seed"
   done
@@ -90,16 +90,16 @@ if [ "$1" = "install" ]; then
       DB_FILE_NAME=$(echo $repository | cut -d '/' -f5 | cut -d '.' -f1 | sed 's/\-//g')
 
       DOCKER_FILE_CONF=docker/sites/$NGINX_FILE_NAME.conf
-      PROJECT_FILE_CONF=api/$PROJECT_FOLDER/docker/nginx.conf
+      PROJECT_FILE_CONF=src/$PROJECT_FOLDER/docker/nginx.conf
       DOCKER_DB_CONF=docker/databases/$DB_FILE_NAME.db
-      PROJECT_DB_CONF=api/$PROJECT_FOLDER/docker/database.db
+      PROJECT_DB_CONF=src/$PROJECT_FOLDER/docker/database.db
 
-      [ ! -d "api/" ] && mkdir api/
+      [ ! -d "src/" ] && mkdir src/
       [ ! -d "docker/sites/" ] && mkdir docker/sites/
       [ ! -d "docker/databases/" ] && mkdir docker/databases/
 
       # shellcheck disable=SC2164
-      cd api/
+      cd src/
       git clone $repository
       cd ../
 
@@ -134,7 +134,7 @@ if [ "$1" = "uninstall" ]; then
   read CHOOSED_PROJECT
 
   COUNTER=0;
-  for project in api/*; do
+  for project in src/*; do
     if [ $COUNTER = $CHOOSED_PROJECT ]; then
 
       PROJECT_FOLDER=$(echo $project | cut -d '/' -f2)
@@ -148,7 +148,7 @@ if [ "$1" = "uninstall" ]; then
 
       [ -f "$DOCKER_FILE_CONF" ] && rm $DOCKER_FILE_CONF
       [ -f "$DOCKER_DB_CONF" ] && rm $DOCKER_DB_CONF
-      [ -d "api/"$PROJECT_FOLDER ] && rm -rf api/$PROJECT_FOLDER
+      [ -d "src/"$PROJECT_FOLDER ] && rm -rf src/$PROJECT_FOLDER
 
       docker-compose up --build -d
 

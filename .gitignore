@@ -13,4 +13,4 @@
 /api/.cache/*
 
 
-/api/*
+/src/*
