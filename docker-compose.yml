@@ -25,7 +25,6 @@ services:
     environment:
       PHP_INI_SCAN_DIR: "/usr/local/etc/php/custom.d:/usr/local/etc/php/conf.d"
     depends_on:
-      - nginx
       - mysql
 
   nginx:
@@ -42,6 +41,8 @@ services:
     volumes:
       - ./docker/sites:/etc/nginx/conf.d
       - ./src:/var/www
+    depends_on:
+      - php
 
   mysql:
     build:
