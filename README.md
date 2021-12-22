@@ -83,9 +83,11 @@
    2. Run command: `sudo launchctl load /Library/LaunchDaemons/com.docker_1270048_alias.plist`
 
 
-3. Add your repository to **.repositories** file.
-4. Run installation command `sh worker.sh install`.
-5. Follow step-by-step installation
+3. Add to **/etc/hosts** local domain of your project
+`127.0.0.48 {LOCAL_DOMAIN}`
+4. Add your repository to **.repositories** file.
+5. Run installation command `sh worker.sh install`.
+6. Follow step-by-step installation
 
 ---
 
