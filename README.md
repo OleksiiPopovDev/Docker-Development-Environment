@@ -102,20 +102,3 @@
 | `sh worker.sh up`        | Build and up Containers                                                        |
 | `sh worker.sh down`      | Remove Containers                                                              |
 | `sh worker.sh rebuild`   | Remove, build and up Containers with refreshing database, migrations and seeds |
-
-
-
-```dockerfile
-  
-ARG DOCKER_USERNAME
-ARG DOCKER_PASSWORD
-ARG DOCKER_UID
-ARG SENTRY_SECRET_KEY
-ARG SENTRY_POSTGRES_HOST
-ARG SENTRY_POSTGRES_PORT
-ARG SENTRY_DB_NAME
-ARG SENTRY_DB_USER
-ARG SENTRY_DB_PASSWORD
-ARG SENTRY_REDIS_HOST
-ARG SENTRY_REDIS_PORT
-```
