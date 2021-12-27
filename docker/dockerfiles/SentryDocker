@@ -1,0 +1,4 @@
+FROM sentry:latest
+
+MAINTAINER Popov Aleksey <popov.scar@gmail.com>
+

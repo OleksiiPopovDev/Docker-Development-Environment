@@ -1,5 +1,9 @@
 #!/bin/bash
 
+## Usage:
+##   . ./export-env.sh ; $COMMAND
+##   . ./export-env.sh ; echo ${MINIENTREGA_FECHALIMITE}
+
 newProjectsList() {
   COUNTER=0;
   for repository in $(cat .repositories); do
@@ -41,6 +45,42 @@ oldProjectsList() {
   fi
 }
 
+additionalInstall(){
+  IS_INSTALL_SENTRY="";
+  while [ ! "$IS_INSTALL_SENTRY" = "Y" ] && [ ! "$IS_INSTALL_SENTRY" = "n" ]; do
+    echo "Do you want install Sentry? [Y/n]"
+    read IS_INSTALL_SENTRY
+  done
+
+  if [ "$IS_INSTALL_SENTRY" = "Y" ]; then
+    SENTRY_ADMIN_EMAIL=$(grep SENTRY_ADMIN_EMAIL .env | cut -d '=' -f2)
+    SENTRY_ADMIN_PASSWORD=$(grep SENTRY_ADMIN_PASSWORD .env | cut -d '=' -f2)
+
+    docker-compose --profile sentry up --build -d
+    docker exec -it $(grep CONTAINER_NAME_SENTRY .env | cut -d '=' -f2) sh -c "sentry upgrade --noinput"
+    docker exec -it $(grep CONTAINER_NAME_SENTRY .env | cut -d '=' -f2) sh -c "sentry createuser --email $SENTRY_ADMIN_EMAIL --password $SENTRY_ADMIN_PASSWORD --superuser"
+    return
+  fi
+
+
+  IS_INSTALL_POSTGRES="";
+  while [ ! "$IS_INSTALL_POSTGRES" = "Y" ] && [ ! "$IS_INSTALL_POSTGRES" = "n" ]; do
+    echo "Do you want install Postgres? [Y/n]"
+    read IS_INSTALL_POSTGRES
+  done
+
+  [ "$IS_INSTALL_POSTGRES" = "Y" ] && docker-compose --profile postgres up --build -d
+
+
+  IS_INSTALL_REDIS="";
+  while [ ! "$IS_INSTALL_REDIS" = "Y" ] && [ ! "$IS_INSTALL_REDIS" = "n" ]; do
+    echo "Do you want install Redis? [Y/n]"
+    read IS_INSTALL_REDIS
+  done
+
+  [ "$IS_INSTALL_REDIS" = "Y" ] && docker-compose --profile redis up --build -d
+}
+
 [ "$1" = "monitor" ] && sampler --config ./docker/sampler/config.yml
 [ "$1" = "bash" ] && docker exec -it $(grep CONTAINER_NAME_API .env | cut -d '=' -f2) /bin/bash
 [ "$1" = "start" ] && docker-compose start
@@ -52,6 +92,8 @@ oldProjectsList() {
 if [ "$1" = "up" ]; then
   docker-compose up --build -d
   [ ! -d "docker/databases/" ] && exit
+
+  additionalInstall
 
   echo "Please wait!"
   sleep 30
@@ -112,6 +154,9 @@ if [ "$1" = "install" ]; then
       echo "USERID=$(id -u $(whoami))" >> .env && \
 
       docker-compose up --build -d
+
+      additionalInstall
+
       echo "Please wait!"
       sleep 30
 
