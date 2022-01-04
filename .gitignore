@@ -4,13 +4,13 @@
 /docker/sites/*
 /docker/databases/*
 /docker/php-ini/conf.d/
-/api/.bash_history
-/api/.local
-/api/.local/*
-/api/.config
-/api/.config/*
-/api/.cache
-/api/.cache/*
-
+/docker/sentry/*
+/src/.bash_history
+/src/.local
+/src/.local/*
+/src/.config
+/src/.config/*
+/src/.cache
+/src/.cache/*
 
 /src/*
