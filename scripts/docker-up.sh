@@ -1,4 +1,7 @@
-docker-compose up --build -d
+#!/bin/bash
+
+docker-compose -f docker-compose.base.yml up --build -d
+
 [ ! -d "docker/databases/" ] && exit
 
 echo "Please wait!"

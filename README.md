@@ -1,4 +1,4 @@
-# Docker Development Environment 
+# Docker Development Environment
 
 <p align="center">
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/github/downloads/PopovAleksey/Docker-Development-Environment/total" alt="Total Downloads"></a>
@@ -10,7 +10,7 @@
 ## How use it
 
 1. Add to your repository directory **docker** with two files:
-   1. database.db
+    1. database.db
     ```sql
     CREATE USER '{USER_NAME}'@'%' IDENTIFIED BY '{PASSWORD}';
     
@@ -20,7 +20,7 @@
     
     FLUSH PRIVILEGES;
     ```
-   2. nginx.conf
+    2. nginx.conf
 
     ```apacheconf
     server {
@@ -59,7 +59,7 @@
 
 2. <span style="color:orange">If you are use MacOS!</span>
 
-   1. Copy content bellow into **/Library/LaunchDaemons/com.docker_1270048_alias.plist**
+    1. Copy content bellow into **/Library/LaunchDaemons/com.docker_1270048_alias.plist**
 
     ```xml
     <?xml version="1.0" encoding="UTF-8"?>
@@ -80,25 +80,36 @@
     </dict>
     </plist>
     ```
-   2. Run command: `sudo launchctl load /Library/LaunchDaemons/com.docker_1270048_alias.plist`
+    2. Run command: `sudo launchctl load /Library/LaunchDaemons/com.docker_1270048_alias.plist`
 
 
 3. Add to **/etc/hosts** local domain of your project
-`127.0.0.48 {LOCAL_DOMAIN}`
+   `127.0.0.48 {LOCAL_DOMAIN}`
 4. Add your repository to **.repositories** file.
-5. Run installation command `sh worker.sh install`.
+5. Run installation command `make install`.
 6. Follow step-by-step installation
 
 ---
 
-## Commands of worker.sh
-| Command                  | Description                                                                    |
-|--------------------------|--------------------------------------------------------------------------------|
-| `sh worker.sh install`   | Installation new project to Container                                          |
-| `sh worker.sh uninstall` | Reinstall project from Container                                               |
-| `sh worker.sh bash`      | Enter to Bash of Container                                                     |
-| `sh worker.sh start`     | Start Docker Containers                                                        |
-| `sh worker.sh stop`      | Stop Docker Containers                                                         |
-| `sh worker.sh up`        | Build and up Containers                                                        |
-| `sh worker.sh down`      | Remove Containers                                                              |
-| `sh worker.sh rebuild`   | Remove, build and up Containers with refreshing database, migrations and seeds |
+## Commands of Makefile
+
+| Command          | Description                                                                    |
+|------------------|--------------------------------------------------------------------------------|
+| `make install`   | Installation new project to Container                                          |
+| `make uninstall` | Reinstall project from Container                                               |
+| `make bash`      | Enter to Bash of Container                                                     |
+| `make start`     | Start Docker Containers                                                        |
+| `make stop`      | Stop Docker Containers                                                         |
+| `make up`        | Build and up Containers                                                        |
+| `make down`      | Remove Containers                                                              |
+| `make rebuild`   | Remove, build and up Containers with refreshing database, migrations and seeds |
+
+## Additional service's commands
+
+| Command                      | Description                                                           |
+|------------------------------|-----------------------------------------------------------------------|
+| `make sentry-install`        | Install the Sentry for projects. Installation with redis and Postgres |
+| `make sentry-import`         | Import a projects to Sentry                                           |
+| `make sentry-uninstall`      | Yahh! This is uninstalling the Sentry                                 |
+| `make grafana-install`       | Installation Grafana with default credentials                         |
+| `make grafana-uninstall`     | Uninstall the Grafana                                                 |
