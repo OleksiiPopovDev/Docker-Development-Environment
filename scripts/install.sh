@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source scripts/new-projects-list.sh
+. ./scripts/new-projects-list.sh
 
 echo
 echo "Choose number of project for installation:"

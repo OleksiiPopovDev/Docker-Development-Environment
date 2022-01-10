@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source scripts/old-projects-list.sh
+. ./scripts/old-projects-list.sh
 
 echo
 echo "Choose number of project for uninstallation:"
