@@ -37,9 +37,6 @@ services:
       - DevEnvNetwork
     links:
       - mysql:database
-      - redis:redis
-      - postgres:postgres
-      - sentry:sentry
     ports:
       - ${HOST}:${HTTP_PORT}:80
     volumes:
@@ -70,12 +67,9 @@ services:
 
 networks:
   DevEnvNetwork:
+    name: DevEnvNetwork
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.29.0.0/16
-
-volumes:
-  src:
-    name: "src_volume"

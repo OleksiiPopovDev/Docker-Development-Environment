@@ -8,7 +8,7 @@ services:
       - .env
     restart: always
     networks:
-      - DevEnvNetwork
+      - DevEnvNetworkExternal
     ports:
       - ${HOST}:${REDIS_PORT}:6379
 
@@ -23,7 +23,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DEFAULT_DATABASE}
     networks:
-      - DevEnvNetwork
+      - DevEnvNetworkExternal
     ports:
       - ${HOST}:${POSTGRES_PORT}:5432
 
@@ -55,7 +55,7 @@ services:
       - redis
       - postgres
     networks:
-      - DevEnvNetwork
+      - DevEnvNetworkExternal
 
   sentry-cron:
     image: sentry:latest
@@ -74,11 +74,11 @@ services:
     env_file:
       - .env
     depends_on:
-      - sentry-redis
-      - sentry-postgres
+      - redis
+      - postgres
     command: "sentry run cron"
     networks:
-      - DevEnvNetwork
+      - DevEnvNetworkExternal
 
   sentry-worker:
     image: sentry:latest
@@ -97,20 +97,13 @@ services:
     env_file:
       - .env
     depends_on:
-      - sentry-redis
-      - sentry-postgres
+      - redis
+      - postgres
     command: "sentry run worker"
     networks:
-      - DevEnvNetwork
+      - DevEnvNetworkExternal
 
 networks:
-  DevEnvNetwork:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.29.0.0/16
-
-volumes:
-  src:
-    name: "src_volume"
+  DevEnvNetworkExternal:
+    external:
+      name: DevEnvNetwork

@@ -7,21 +7,14 @@ services:
     env_file:
       - .env
     restart: always
-    links:
-      - mysql:database
+#    links:
+#      - mysql:database
     networks:
-      - DevEnvNetwork
+      - DevEnvNetworkExternal
     ports:
       - ${HOST}:${GRAFANA_PORT}:3000
 
 networks:
-  DevEnvNetwork:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.29.0.0/16
-
-volumes:
-  src:
-    name: "src_volume"
+  DevEnvNetworkExternal:
+    external:
+      name: DevEnvNetwork
