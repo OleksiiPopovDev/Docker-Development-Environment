@@ -43,12 +43,17 @@ for repository in $(cat .repositories); do
       echo "USERID=$(id -u $(whoami))" >>.env &&
       docker-compose -f docker-compose.base.yml up --build -d
 
-    echo "Please wait!"
-    sleep 30
+    echo "Installation database and run migrations"
 
     MYSQL_ROOT_PASS=$(grep MYSQL_ROOT_PASSWORD .env | cut -d '=' -f2)
-    docker exec -it $(grep CONTAINER_NAME_MYSQL .env | cut -d '=' -f2) sh -c "export MYSQL_PWD=$MYSQL_ROOT_PASS ; mysql -uroot < /var/databases/$DB_FILE_NAME.db"
-    docker exec -it $(grep CONTAINER_NAME_API .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && cp .env.example .env && composer install && php artisan key:generate && php artisan migrate && php artisan db:seed"
+
+    while ! docker exec -it $(grep CONTAINER_NAME_MYSQL .env | cut -d '=' -f2) sh -c "export MYSQL_PWD=$MYSQL_ROOT_PASS ; mysql -uroot < /var/databases/$DB_FILE_NAME.db" --silent; do
+      echo "Waiting 10 seconds for start of MySQL and check again!"
+      sleep 10
+    done
+
+    docker exec -it $(grep CONTAINER_NAME_API .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && cp .env.example .env && composer install"
+    docker exec -it $(grep CONTAINER_NAME_API .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && php artisan key:generate && php artisan migrate && php artisan db:seed"
 
     exit
   fi

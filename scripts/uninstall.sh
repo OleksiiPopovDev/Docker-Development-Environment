@@ -24,7 +24,7 @@ for project in src/*; do
     [ -f "$DOCKER_FILE_CONF" ] && rm $DOCKER_FILE_CONF
     [ -f "$DOCKER_DB_CONF" ] && rm $DOCKER_DB_CONF
     [ -f "$DOCKER_SENTRY_DUMP" ] && rm $DOCKER_SENTRY_DUMP
-    [ -d "src/"$PROJECT_FOLDER ] && rm -rf src/$PROJECT_FOLDER
+    [ -d "src/$PROJECT_FOLDER" ] && rm -rf src/$PROJECT_FOLDER
 
     docker-compose -f docker-compose.base.yml up --build -d
 
