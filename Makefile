@@ -36,9 +36,13 @@ bash:
 
 start:
 	@docker-compose -f docker-compose.base.yml start
+	@docker-compose -f docker-compose.grafana.yml start 2> /dev/null
+	@docker-compose -f docker-compose.sentry.yml start 2> /dev/null
 
 stop:
 	@docker-compose -f docker-compose.base.yml stop
+	@docker-compose -f docker-compose.grafana.yml stop 2> /dev/null
+	@docker-compose -f docker-compose.sentry.yml stop 2> /dev/null
 
 generate:
 	@tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo ''
