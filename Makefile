@@ -44,6 +44,8 @@ stop:
 	@docker-compose -f docker-compose.grafana.yml stop 2> /dev/null
 	@docker-compose -f docker-compose.sentry.yml stop 2> /dev/null
 
+restart: stop start
+
 generate:
 	@tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo ''
 
