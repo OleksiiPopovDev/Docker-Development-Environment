@@ -41,6 +41,8 @@ sysvshm \
 redis \
 xdebug
 
+RUN sudo -E docker-php-ext-install bcmath
+
 # Create user and modify ssh config
 RUN useradd -u ${DOCKER_UID} -p "$(openssl passwd -1 ${DOCKER_PASSWORD})" ${DOCKER_USERNAME} \
 && echo "${DOCKER_USERNAME}	ALL=(ALL:ALL) ALL" >> /etc/sudoers \
