@@ -10,6 +10,17 @@
 ## How use it
 
 1. Add to your repository directory **docker** with two files:
+
+   _Replace all point like {USER_NAME} to your info_
+
+| Point           | Description                               |
+|-----------------|-------------------------------------------|
+| {USER_NAME}     | User name of your local database          |
+| {PASSWORD}      | Password for connection to local database |
+| {DATABASE_NAME} | Database name                             |
+| {LOCAL_DOMAIN}  | Domain of your local project              |
+| {PROJECT_NAME}  | Project name                              |
+
     1. database.db
     ```sql
     CREATE USER '{USER_NAME}'@'%' IDENTIFIED BY '{PASSWORD}';
@@ -25,7 +36,11 @@
     ```apacheconf
     server {
         listen       80;
+        listen       443 ssl;
         server_name  {LOCAL_DOMAIN};
+   
+        ssl_certificate /etc/ssl/{PROJECT_NAME}.crt;
+        ssl_certificate_key /etc/ssl/{PROJECT_NAME}.key;
     
         charset utf-8;
         access_log  /var/log/nginx/{PROJECT_NAME}.access.log  main;
@@ -56,6 +71,30 @@
         }
     }
     ```
+
+3. Generate Certificate for use SSL (_optional_)
+
+In project folder run this commands:
+
+   ```shell
+   cd docker
+   ```
+
+   ```shell
+   /usr/local/opt/openssl/bin/openssl req -x509 -nodes -days 825 -newkey rsa:2048 \
+      -addext "subjectAltName = IP:127.0.0.48,DNS:{LOCAL_DOMAIN}" \
+      -addext "extendedKeyUsage = serverAuth" \
+      -keyout private.key \
+      -out certificate.crt
+   ```
+
+_Replace {LOCAL_DOMAIN} to your local project domain from nginx.conf_
+
+Fill all fields:
+![](/Users/aleksei/PhpstormProjects/GitHubPetProjects/docs/certificate-info.jpeg)
+The most important line is the one that requests the Common Name (e.g. server FQDN or YOUR name). You need to enter the
+domain name associated with your server or your server’s public IP address (in my case it is just a testing setup - so I
+will use my local IP address).
 
 2. <span style="color:orange">If you are use MacOS!</span>
 

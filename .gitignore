@@ -5,6 +5,7 @@
 /docker/databases/*
 /docker/php-ini/conf.d/
 /docker/sentry/*
+/docker/ssl/*
 /src/.bash_history
 /src/.local
 /src/.local/*

@@ -1,6 +1,6 @@
 FROM mysql:8.0
 
-MAINTAINER Popov Aleksey <popov.scar@gmail.com>
+MAINTAINER Oleksii Popov <popovaleksey1991@gmail.com>
 
 
 ENTRYPOINT ["docker-entrypoint.sh"]

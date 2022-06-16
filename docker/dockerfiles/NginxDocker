@@ -1,14 +1,6 @@
 FROM nginx:stable-alpine
 
-MAINTAINER Popov Aleksey <popov.scar@gmail.com>
+MAINTAINER Oleksii Popov <popovaleksey1991@gmail.com>
 
 WORKDIR /var/www
-
-#RUN apt-get update -y
-#RUN apt-cache search php7-*
-#RUN apt-get install -y nano composer wget php7.3-zip php7.3-gd php7.3-intl php7.3-xsl php7.3-mysql
-#
-#RUN wget https://phar.phpunit.de/phpunit-8.5.phar
-#RUN chmod +x phpunit-8.5.phar
-#RUN mv phpunit-8.5.phar /usr/local/bin/phpunit
 

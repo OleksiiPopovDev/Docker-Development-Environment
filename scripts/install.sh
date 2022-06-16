@@ -18,15 +18,23 @@ for repository in $(cat .repositories); do
 
     DOCKER_FILE_CONF=docker/sites/$NGINX_FILE_NAME.conf
     PROJECT_FILE_CONF=src/$PROJECT_FOLDER/docker/nginx.conf
+
     DOCKER_DB_CONF=docker/databases/$DB_FILE_NAME.db
     PROJECT_DB_CONF=src/$PROJECT_FOLDER/docker/database.db
+
     DOCKER_SENTRY_DUMP=docker/sentry/$SENTRY_FILE_NAME.json
     PROJECT_SENTRY_DUMP=src/$PROJECT_FOLDER/docker/sentry.json
+
+    DOCKER_CRT=docker/ssl/$SENTRY_FILE_NAME.crt
+    PROJECT_CRT=src/$PROJECT_FOLDER/docker/certificate.crt
+    DOCKER_PRIVATE_KEY=docker/ssl/$SENTRY_FILE_NAME.key
+    PROJECT_PRIVATE_KEY=src/$PROJECT_FOLDER/docker/private.key
 
     [ ! -d "src/" ] && mkdir src/
     [ ! -d "docker/sites/" ] && mkdir docker/sites/
     [ ! -d "docker/databases/" ] && mkdir docker/databases/
     [ ! -d "docker/sentry/" ] && mkdir docker/sentry/
+    [ ! -d "docker/ssl/" ] && mkdir docker/ssl/
 
     # shellcheck disable=SC2164
     cd src/
@@ -36,6 +44,8 @@ for repository in $(cat .repositories); do
     [ -f "$PROJECT_FILE_CONF" ] && cp $PROJECT_FILE_CONF $DOCKER_FILE_CONF
     [ -f "$PROJECT_DB_CONF" ] && cp $PROJECT_DB_CONF $DOCKER_DB_CONF
     [ -f "$PROJECT_SENTRY_DUMP" ] && cp $PROJECT_SENTRY_DUMP $DOCKER_SENTRY_DUMP
+    [ -f "$PROJECT_CRT" ] && cp $PROJECT_CRT $DOCKER_CRT
+    [ -f "$PROJECT_PRIVATE_KEY" ] && cp $PROJECT_PRIVATE_KEY $DOCKER_PRIVATE_KEY
 
     cp .env.example .env &&
       echo "\n" >>.env &&

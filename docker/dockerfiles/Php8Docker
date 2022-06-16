@@ -1,6 +1,6 @@
 FROM php:8.0-fpm
 
-MAINTAINER Popov Aleksey <popov.scar@gmail.com>
+MAINTAINER Oleksii Popov <popovaleksey1991@gmail.com>
 
 WORKDIR /var/www
 

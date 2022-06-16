@@ -53,7 +53,7 @@ up:
 	@sh scripts/docker-up.sh
 
 down:
-	@docker-compose -f docker-compose.base.yml down
+	@docker-compose -f docker-compose.base.yml -f docker-compose.grafana.yml -f docker-compose.sentry.yml down
 
 rebuild: down up
 
