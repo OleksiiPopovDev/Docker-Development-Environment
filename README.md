@@ -91,7 +91,7 @@ In project folder run this commands:
 _Replace {LOCAL_DOMAIN} to your local project domain from nginx.conf_
 
 Fill all fields:
-![](/Users/aleksei/PhpstormProjects/GitHubPetProjects/docs/certificate-info.jpeg)
+![](docs/certificate-info.jpeg)
 The most important line is the one that requests the Common Name (e.g. server FQDN or YOUR name). You need to enter the
 domain name associated with your server or your server’s public IP address (in my case it is just a testing setup - so I
 will use my local IP address).
