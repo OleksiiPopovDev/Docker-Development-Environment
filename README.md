@@ -11,7 +11,7 @@
 
 1. Add to your repository directory **docker** with two files:
 
-   _Replace all point like {USER_NAME} to your info_
+   _Replace all points like {USER_NAME} into your configs_
 
 | Point           | Description                               |
 |-----------------|-------------------------------------------|
@@ -21,58 +21,68 @@
 | {LOCAL_DOMAIN}  | Domain of your local project              |
 | {PROJECT_NAME}  | Project name                              |
 
-    1. database.db
-    ```sql
-    CREATE USER '{USER_NAME}'@'%' IDENTIFIED BY '{PASSWORD}';
-    
-    CREATE DATABASE IF NOT EXISTS {DATABASE_NAME};
-    
-    GRANT ALL PRIVILEGES ON {DATABASE_NAME}.* TO '{USER_NAME}'@'%';
-    
-    FLUSH PRIVILEGES;
-    ```
-    2. nginx.conf
+2. database.db
 
-    ```apacheconf
-    server {
-        listen       80;
-        listen       443 ssl;
-        server_name  {LOCAL_DOMAIN};
-   
-        ssl_certificate /etc/ssl/{PROJECT_NAME}.crt;
-        ssl_certificate_key /etc/ssl/{PROJECT_NAME}.key;
+```sql
+    CREATE
+USER '{USER_NAME}'@'%' IDENTIFIED BY '{PASSWORD}';
     
-        charset utf-8;
-        access_log  /var/log/nginx/{PROJECT_NAME}.access.log  main;
-        error_log /var/log/nginx/{PROJECT_NAME}.error.log;
+    CREATE
+DATABASE IF NOT EXISTS {DATABASE_NAME};
     
-        root   /var/www/{PROJECT_FOLDER}/public;
-        index  index.php index.html index.htm;
+    GRANT ALL PRIVILEGES ON
+{DATABASE_NAME}.* TO '{USER_NAME}'@'%';
     
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   /usr/share/nginx/html;
-        }
+    FLUSH
+PRIVILEGES;
+   ```
+
+3. nginx.conf
+
+```apacheconf
+server {
+    listen       80;
+    listen       443 ssl;
     
-        location / {
-            try_files $uri $uri/ /index.php?$query_string;
-        }
+    server_name  {LOCAL_DOMAIN};
     
-        location ~ \.php$ {
-            try_files $uri =404;
-            fastcgi_pass   php:9000;
-            fastcgi_index  index.php;
-            fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-            include        fastcgi_params;
-        }
+    ssl_certificate /etc/ssl/{PROJECT_NAME}.crt;
+    ssl_certificate_key /etc/ssl/{PROJECT_NAME}.key;
     
-        location ~ /\.ht {
-            deny  all;
-        }
+    charset utf-8;
+    
+    access_log  /var/log/nginx/{PROJECT_NAME}.access.log  main;
+    error_log /var/log/nginx/{PROJECT_NAME}.error.log;
+    
+    root   /var/www/{PROJECT_FOLDER}/public;
+    
+    index  index.php index.html index.htm;
+    
+    error_page   500 502 503 504  /50x.html;
+    
+    location = /50x.html {
+        root   /usr/share/nginx/html;
     }
-    ```
+    
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+    
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_pass   php:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+    
+    location ~ /\.ht {
+        deny  all;
+    }
+}
+```
 
-3. Generate Certificate for use SSL (_optional_)
+4. Generate Certificate for use SSL (_optional_)
 
 In project folder run this commands:
 
