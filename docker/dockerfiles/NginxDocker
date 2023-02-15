@@ -1,4 +1,6 @@
-FROM nginx:stable-alpine
+ARG DOCKER_NGINX_VERSION
+
+FROM nginx:${DOCKER_NGINX_VERSION}
 
 MAINTAINER Oleksii Popov <popovaleksey1991@gmail.com>
 

@@ -1,4 +1,9 @@
-FROM php:7.4-fpm
+ARG DOCKER_PHP_VERSION
+ARG DOCKER_COMPOSER_VERSION
+
+FROM composer:${DOCKER_COMPOSER_VERSION} as COMPOSER_PACKAGE
+
+FROM php:${DOCKER_PHP_VERSION}
 
 MAINTAINER Oleksii Popov <popovaleksey1991@gmail.com>
 
@@ -39,7 +44,10 @@ sysvmsg \
 sysvsem \
 sysvshm \
 redis \
-xdebug
+xdebug \
+gettext
+
+RUN sudo -E docker-php-ext-install bcmath
 
 # Create user and modify ssh config
 RUN useradd -u ${DOCKER_UID} -p "$(openssl passwd -1 ${DOCKER_PASSWORD})" ${DOCKER_USERNAME} \
@@ -51,9 +59,8 @@ RUN useradd -u ${DOCKER_UID} -p "$(openssl passwd -1 ${DOCKER_PASSWORD})" ${DOCK
 && chmod +x /usr/local/bin/sampler
 
 
-# Get latest Composer
-COPY --from=composer:2.0.6 /usr/bin/composer /usr/bin/composer
-#COPY php.ini-dev /usr/local/etc/php/php.ini
+
+COPY --from=COMPOSER_PACKAGE /usr/bin/composer /usr/bin/composer
 
 USER ${DOCKER_USERNAME}
 

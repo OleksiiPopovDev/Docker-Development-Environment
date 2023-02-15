@@ -4,10 +4,12 @@ services:
   php:
     build:
       context: docker/dockerfiles
-      dockerfile: Php8Docker
+      dockerfile: PhpDocker
       args:
         - DOCKER_USERNAME=${USERNAME}
         - DOCKER_UID=${USERID}
+        - DOCKER_PHP_VERSION=${DOCKER_PHP_VERSION}
+        - DOCKER_COMPOSER_VERSION=${DOCKER_COMPOSER_VERSION}
     env_file:
       - .env
     volumes:
@@ -32,6 +34,10 @@ services:
     build:
       context: docker/dockerfiles
       dockerfile: NginxDocker
+      args:
+        - DOCKER_NGINX_VERSION=${DOCKER_NGINX_VERSION}
+    env_file:
+      - .env
     container_name: ${CONTAINER_NAME_NGINX}
     networks:
       - DevEnvNetwork
@@ -54,6 +60,10 @@ services:
     build:
       context: docker/dockerfiles
       dockerfile: MysqlDocker
+      args:
+        - DOCKER_MYSQL_VERSION=${DOCKER_MYSQL_VERSION}
+    env_file:
+      - .env
     container_name: ${CONTAINER_NAME_MYSQL}
     networks:
       - DevEnvNetwork

@@ -1,4 +1,6 @@
-FROM sentry:latest
+ARG DOCKER_SENTRY_VERSION
+
+FROM sentry:${DOCKER_SENTRY_VERSION}
 
 MAINTAINER Oleksii Popov <popovaleksey1991@gmail.com>
 

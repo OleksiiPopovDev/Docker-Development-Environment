@@ -1,4 +1,6 @@
-FROM mysql:8.0
+ARG DOCKER_MYSQL_VERSION
+
+FROM mysql:${DOCKER_MYSQL_VERSION}
 
 MAINTAINER Oleksii Popov <popovaleksey1991@gmail.com>
 
