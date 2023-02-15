@@ -29,12 +29,23 @@ git \
 wget \
 alsa-tools
 
-RUN apt update \
-    && apt install -y zlib1g-dev g++ git libicu-dev zip libzip-dev libpng-dev libjpeg-dev libfreetype-dev pkg-config vim net-tools npm libyaml-dev jq
-RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
-RUN docker-php-ext-install gd intl pdo_mysql zip exif pcntl sockets bcmath mysqli opcache gettext
-
-RUN pecl install xdebug && docker-php-ext-enable xdebug;
+# Install PHP extensions
+RUN install-php-extensions \
+intl \
+pdo_mysql \
+exif \
+bcmath \
+gd \
+bz2 \
+zip \
+pcntl \
+shmop \
+sysvmsg \
+sysvsem \
+sysvshm \
+redis \
+xdebug \
+gettext
 
 RUN sudo -E docker-php-ext-install bcmath
 
