@@ -22,6 +22,8 @@ for repository in $(cat .repositories); do
     DOCKER_DB_CONF=docker/databases/$DB_FILE_NAME.db
     PROJECT_DB_CONF=src/$PROJECT_FOLDER/docker/database.db
 
+    PROJECT_SH_FILE=src/$PROJECT_FOLDER/docker/install.sh
+
     DOCKER_SENTRY_DUMP=docker/sentry/$SENTRY_FILE_NAME.json
     PROJECT_SENTRY_DUMP=src/$PROJECT_FOLDER/docker/sentry.json
 
@@ -53,7 +55,7 @@ for repository in $(cat .repositories); do
       echo "USERID=$(id -u $(whoami))" >>.env &&
       docker-compose -f docker-compose.base.yml up --build -d
 
-    echo "Installation database and run migrations"
+    echo "Installation database"
 
     MYSQL_ROOT_PASS=$(grep MYSQL_ROOT_PASSWORD .env | cut -d '=' -f2)
 
@@ -62,8 +64,9 @@ for repository in $(cat .repositories); do
       sleep 10
     done
 
-    docker exec -it $(grep CONTAINER_NAME_API .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && cp .env.example .env && composer install"
-    docker exec -it $(grep CONTAINER_NAME_API .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && php artisan key:generate && php artisan migrate && php artisan db:seed"
+    echo "Run installation scripts of project"
+
+    [ -f "$PROJECT_SH_FILE" ] && docker exec -it $(grep CONTAINER_NAME_API .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && sh docker/install.sh"
 
     exit
   fi

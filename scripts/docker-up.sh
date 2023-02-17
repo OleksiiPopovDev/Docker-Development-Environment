@@ -6,7 +6,6 @@ docker-compose -f docker-compose.base.yml up --build -d
 
 MYSQL_ROOT_PASS=$(grep MYSQL_ROOT_PASSWORD .env | cut -d '=' -f2)
 CONTAINER_MYSQL=$(grep CONTAINER_NAME_MYSQL .env | cut -d '=' -f2)
-CONTAINER_API=$(grep CONTAINER_NAME_API .env | cut -d '=' -f2)
 
 for config in docker/databases/*; do
   DB_FILE_NAME=$(echo $config | cut -d '/' -f3 | sed 's/\-//g')
@@ -19,6 +18,7 @@ done
 
 for project in src/*; do
   PROJECT_FOLDER=$(echo $project | cut -d '/' -f2)
-  docker exec -it $CONTAINER_API sh -c "cd $PROJECT_FOLDER && cp .env.example .env && composer install"
-  docker exec -it $CONTAINER_API sh -c "cd $PROJECT_FOLDER && php artisan key:generate && php artisan migrate && php artisan db:seed"
+  PROJECT_SH_FILE=src/$PROJECT_FOLDER/docker/install.sh
+
+  [ -f "$PROJECT_SH_FILE" ] && docker exec -it $(grep CONTAINER_NAME_API .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && sh docker/install.sh"
 done
