@@ -9,12 +9,27 @@ read CHOOSED_PROJECT
 COUNTER=0
 for repository in $(cat .repositories); do
   if [ $COUNTER = $CHOOSED_PROJECT ]; then
-    docker-compose -f docker-compose.base.yml down
+    docker-compose -f docker-compose.base.yml stop
 
     PROJECT_FOLDER=$(echo $repository | cut -d '/' -f5 | cut -d '.' -f1)
+    if [ -z "$PROJECT_FOLDER" ]; then
+      PROJECT_FOLDER=$(echo $repository | cut -d '/' -f2 | cut -d '.' -f1)
+    fi
+
     NGINX_FILE_NAME=$(echo $repository | cut -d '/' -f5 | cut -d '.' -f1 | awk '{print tolower($0)}')
+    if [ -z "$NGINX_FILE_NAME" ]; then
+      NGINX_FILE_NAME=$(echo $repository | cut -d '/' -f2 | cut -d '.' -f1 | awk '{print tolower($0)}')
+    fi
+
     DB_FILE_NAME=$(echo $repository | cut -d '/' -f5 | cut -d '.' -f1 | sed 's/\-//g')
+    if [ -z "$DB_FILE_NAME" ]; then
+      DB_FILE_NAME=$(echo $repository | cut -d '/' -f2 | cut -d '.' -f1 | sed 's/\-//g')
+    fi
+
     SENTRY_FILE_NAME=$(echo $repository | cut -d '/' -f5 | cut -d '.' -f1 | sed 's/\-//g')
+    if [ -z "$SENTRY_FILE_NAME" ]; then
+      SENTRY_FILE_NAME=$(echo $repository | cut -d '/' -f2 | cut -d '.' -f1 | sed 's/\-//g')
+    fi
 
     DOCKER_FILE_CONF=docker/sites/$NGINX_FILE_NAME.conf
     PROJECT_FILE_CONF=src/$PROJECT_FOLDER/docker/nginx.conf

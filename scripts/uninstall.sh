@@ -20,7 +20,7 @@ for project in src/*; do
     DOCKER_SSL_CRT=docker/ssl/$PROJECT_NAME.crt
     DOCKER_SSL_KEY=docker/ssl/$PROJECT_NAME.key
 
-    docker-compose -f docker-compose.base.yml down
+    docker-compose -f docker-compose.base.yml stop
 
     [ -f "$DOCKER_FILE_CONF" ] && rm $DOCKER_FILE_CONF
     [ -f "$DOCKER_DB_CONF" ] && rm $DOCKER_DB_CONF
