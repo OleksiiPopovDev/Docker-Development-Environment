@@ -60,7 +60,7 @@ services:
       - DevEnvNetworkExternal
 
   sentry-cron:
-    image: sentry:latest
+    image: sentry:${DOCKER_SENTRY_VERSION}
     environment:
       - SENTRY_SECRET_KEY=${SENTRY_SECRET_KEY}
       - SENTRY_POSTGRES_HOST=postgres
@@ -83,7 +83,7 @@ services:
       - DevEnvNetworkExternal
 
   sentry-worker:
-    image: sentry:latest
+    image: sentry:${DOCKER_SENTRY_VERSION}
     environment:
       - SENTRY_SECRET_KEY=${SENTRY_SECRET_KEY}
       - SENTRY_POSTGRES_HOST=postgres

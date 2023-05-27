@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  node:
+    build:
+      context: docker/dockerfiles
+      dockerfile: NodeDocker
+      args:
+        - DOCKER_NODE_VERSION=${DOCKER_NODE_VERSION}
+    container_name: ${CONTAINER_NAME_NODE}
+    env_file:
+      - .env
+    networks:
+      - DevEnvNetworkExternal
+    ports:
+      - "${HOST}:3001:3000"
+      - "${HOST}:4200:4200"
+      - "${HOST}:4201:4201"
+    volumes:
+      - ./src:/var/app
+
+networks:
+  DevEnvNetworkExternal:
+    external:
+      name: DevEnvNetwork

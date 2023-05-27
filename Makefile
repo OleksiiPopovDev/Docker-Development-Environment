@@ -76,3 +76,12 @@ grafana-install: ## Installation Grafana with default credentials
 .PHONY: grafana-uninstall
 grafana-uninstall: ## Uninstall the Grafana
 	@docker-compose -f docker-compose.grafana.yml down
+
+##@ [Node commands]
+.PHONY: node-install
+node-install: ## Installation Node with default credentials
+	@docker-compose -f docker-compose.node.yml up -d
+
+.PHONY: node-uninstall
+node-uninstall: ## Uninstall the Node
+	@docker-compose -f docker-compose.node.yml down

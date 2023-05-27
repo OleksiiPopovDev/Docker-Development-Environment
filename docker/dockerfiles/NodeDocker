@@ -1,0 +1,33 @@
+ARG DOCKER_NODE_VERSION
+ARG DOCKER_NODE_PORTS
+
+FROM node:${DOCKER_NODE_VERSION}
+
+MAINTAINER Oleksii Popov <popovaleksey1991@gmail.com>
+
+WORKDIR /var/app
+
+RUN npm install -g @angular/cli
+RUN npm install --global gulp
+RUN npm install --global gulp-replace
+RUN npm install --global gulp-clean
+RUN npm install --global vinyl-ftp
+RUN npm install --global child_process
+RUN npm install --global forever
+
+COPY . .
+
+
+#EXPOSE 4200
+#EXPOSE 4201
+#EXPOSE 4202
+#EXPOSE 3000
+EXPOSE ${DOCKER_NODE_PORTS}
+
+CMD [ "node", "frontend-fitnessserver-v2/demon.js" ]
+
+#CMD [ "npm", "start" ]
+#CMD [ "node", "server.js" ]
+#CMD ng serve --host 0.0.0.0 --hmr
+#CMD ["sh","-c","cd /var/app/frontend-fitnessserver-v2/dashboard && npm install && ng serve --open --hmr"]
+#CMD ["sh","-c","cd /var/app/frontend-fitnessserver-v2/socket-server && forever start index.js"]
