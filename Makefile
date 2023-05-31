@@ -10,26 +10,20 @@ help:
 monitor:
 	@sampler --config ./docker/sampler/config.yml
 
+
+
+##@ [Installer commands]
+.PHONY: install
+install: ## Installation new project to Container
+	@sh scripts/install.sh
+
+.PHONY: uninstall
+uninstall: ## Reinstall project from Container
+	@sh scripts/uninstall.sh
+
+
+
 ##@ [Docker commands]
-.PHONY: bash
-bash: ## Enter to Bash of Container
-	@docker exec -it ${CONTAINER_NAME_API} /bin/bash
-
-.PHONY: start
-start: ## Start Docker Containers
-	@docker-compose -f docker-compose.base.yml start
-	@docker-compose -f docker-compose.grafana.yml start 2> /dev/null
-	@docker-compose -f docker-compose.sentry.yml start 2> /dev/null
-
-.PHONY: stop
-stop: ## Stop Docker Containers
-	@docker-compose -f docker-compose.base.yml stop
-	@docker-compose -f docker-compose.grafana.yml stop 2> /dev/null
-	@docker-compose -f docker-compose.sentry.yml stop 2> /dev/null
-
-.PHONY: restart
-restart: stop start ## Restart Docker Containers
-
 .PHONY: generate
 generate:
 	@tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo ''
@@ -40,19 +34,52 @@ up: ## Build and up Containers
 
 .PHONY: down
 down: ## Remove Containers
-	@docker-compose -f docker-compose.base.yml -f docker-compose.grafana.yml -f docker-compose.sentry.yml down
+	@docker-compose -f docker-compose.php.yml -f docker-compose.node.yml -f docker-compose.grafana.yml -f docker-compose.sentry.yml down
 
 .PHONY: rebuild
-rebuild: down up ## Remove, build and up Containers with refreshing database, migrations and seeds
+rebuild: down up ## Remove, build and up Containers with refreshing database, migrations and seeds all products
 
-##@ [Installer commands]
-.PHONY: install
-install: ## Installation new project to Container
-	@sh scripts/install.sh
 
-.PHONY: uninstall
-uninstall: ## Reinstall project from Container
-	@sh scripts/uninstall.sh
+
+##@ [PHP Docker Commands]
+.PHONY: php-bash
+php-bash: ## Enter to Bash of PHP Container
+	@docker exec -it ${CONTAINER_NAME_PHP} /bin/bash
+
+.PHONY: php-start
+php-start: ## Start Docker Containers PHP
+	@docker-compose -f docker-compose.php.yml start
+	@docker-compose -f docker-compose.sentry.yml start 2> /dev/null
+
+.PHONY: php-stop
+php-stop: ## Stop Docker Containers PHP
+	@docker-compose -f docker-compose.php.yml stop
+	@docker-compose -f docker-compose.sentry.yml stop 2> /dev/null
+
+.PHONY: php-restart
+php-restart: php-stop php-start ## Restart Docker Containers PHP
+
+
+
+##@ [Node commands]
+.PHONY: node-bash
+node-bash: ## Enter to Bash of Node Container
+	@docker exec -it ${CONTAINER_NAME_NODE} /bin/bash
+
+.PHONY: node-start
+node-start: ## Start Docker Containers Node
+	@docker-compose -f docker-compose.node.yml start
+	@docker-compose -f docker-compose.sentry.yml start 2> /dev/null
+
+.PHONY: node-stop
+node-stop: ## Stop Docker Containers Node
+	@docker-compose -f docker-compose.node.yml stop
+	@docker-compose -f docker-compose.sentry.yml stop 2> /dev/null
+
+.PHONY: node-restart
+node-restart: node-stop node-start ## Restart Docker Containers Node
+
+
 
 ##@ [Sentry commands]
 .PHONY: sentry-install
@@ -68,6 +95,8 @@ sentry-import: ## Import a projects to Sentry
 sentry-uninstall: ## Yahh! This is uninstalling the Sentry
 	@docker-compose -f docker-compose.sentry.yml down
 
+
+
 ##@ [Grafana commands]
 .PHONY: grafana-install
 grafana-install: ## Installation Grafana with default credentials
@@ -77,11 +106,10 @@ grafana-install: ## Installation Grafana with default credentials
 grafana-uninstall: ## Uninstall the Grafana
 	@docker-compose -f docker-compose.grafana.yml down
 
-##@ [Node commands]
-.PHONY: node-install
-node-install: ## Installation Node with default credentials
-	@docker-compose -f docker-compose.node.yml up -d
+.PHONY: grafana-start
+grafana-start: ##
+	@docker-compose -f docker-compose.grafana.yml start 2> /dev/null
 
-.PHONY: node-uninstall
-node-uninstall: ## Uninstall the Node
-	@docker-compose -f docker-compose.node.yml down
+.PHONY: grafana-stop
+grafana-stop: ##
+	@docker-compose -f docker-compose.grafana.yml stop 2> /dev/null

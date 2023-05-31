@@ -17,7 +17,7 @@ services:
       - ./docker/php-ini:/usr/local/etc/php
       - ./docker/xdebug-ini/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
       - ./docker/sampler:/usr/local/etc/sampler
-    container_name: ${CONTAINER_NAME_API}
+    container_name: ${CONTAINER_NAME_PHP}
     restart: unless-stopped
     networks:
       - DevEnvNetwork

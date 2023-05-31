@@ -1,5 +1,10 @@
 #!/bin/bash
 
+for repository in $(cat .repositories); do
+  echo $repository | cut -d ']' -f1 | cut -d '[' -f2
+done
+
+
 . ./scripts/new-projects-list.sh
 
 echo
@@ -9,7 +14,10 @@ read CHOOSED_PROJECT
 COUNTER=0
 for repository in $(cat .repositories); do
   if [ $COUNTER = $CHOOSED_PROJECT ]; then
-    docker-compose -f docker-compose.base.yml stop
+    #docker-compose -f docker-compose.base.yml stop
+
+    PROJECT_TYPE=$(echo $repository | cut -d ']' -f1 | cut -d '[' -f2)
+    repository=$(echo $repository | cut -d ']' -f2)
 
     PROJECT_FOLDER=$(echo $repository | cut -d '/' -f5 | cut -d '.' -f1)
     if [ -z "$PROJECT_FOLDER" ]; then
@@ -67,23 +75,45 @@ for repository in $(cat .repositories); do
     cp .env.example .env &&
       echo "\n" >>.env &&
       echo "USERNAME=$(whoami)" >>.env &&
-      echo "USERID=$(id -u $(whoami))" >>.env &&
-      docker-compose -f docker-compose.base.yml up --build -d
+      echo "USERID=$(id -u $(whoami))" >>.env #&&
+      #docker-compose -f docker-compose.base.yml up --build -d
 
-    echo "Installation database"
 
-    MYSQL_ROOT_PASS=$(grep MYSQL_ROOT_PASSWORD .env | cut -d '=' -f2)
+    if [ "$PROJECT_TYPE" = 'PHP' ]; then
+      docker-compose -f docker-compose.php.yml stop
+      docker-compose -f docker-compose.php.yml up --build -d
 
-    while ! docker exec -it $(grep CONTAINER_NAME_MYSQL .env | cut -d '=' -f2) sh -c "export MYSQL_PWD=$MYSQL_ROOT_PASS ; mysql -uroot < /var/databases/$DB_FILE_NAME.db" --silent; do
-      echo "Waiting 10 seconds for start of MySQL and check again!"
-      sleep 10
-    done
+      echo "Installation database"
+      MYSQL_ROOT_PASS=$(grep MYSQL_ROOT_PASSWORD .env | cut -d '=' -f2)
 
-    echo "Run installation scripts of project"
+      attempts=0
+      # shellcheck disable=SC2046
+      while ! docker exec -it $(grep CONTAINER_NAME_MYSQL .env | cut -d '=' -f2) sh -c "export MYSQL_PWD=$MYSQL_ROOT_PASS ; mysql -uroot < /var/databases/$DB_FILE_NAME.db" --silent; do
+        echo "Waiting 10 seconds for start of MySQL and check again!"
+        sleep 10
+        attempts=$((attempts + 1))
+        if [ $attempts = 5 ]; then
+          echo "Can't configure mysql database. Skip configuration database and continue installation? (yes/no)"
+          read SKIP_CONFIGURATION
 
-    [ -f "$PROJECT_SH_FILE" ] && docker exec -it $(grep CONTAINER_NAME_API .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && sh docker/install.sh"
+          if [ "$SKIP_CONFIGURATION" = "yes" ]; then
+            break
+          fi
+        fi
+      done
 
-    exit
+      echo "Run installation scripts of project"
+      # shellcheck disable=SC2046
+      [ -f "$PROJECT_SH_FILE" ] && docker exec -it $(grep CONTAINER_NAME_PHP .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && sh docker/install.sh"
+      exit
+    fi
+
+    if [ "$PROJECT_TYPE" = 'Node' ]; then
+      docker-compose -f docker-compose.node.yml stop
+      docker-compose -f docker-compose.node.yml up --build -d
+
+      exit
+    fi
   fi
   COUNTER=$((COUNTER + 1))
 done

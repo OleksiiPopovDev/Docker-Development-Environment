@@ -20,5 +20,5 @@ for project in src/*; do
   PROJECT_FOLDER=$(echo $project | cut -d '/' -f2)
   PROJECT_SH_FILE=src/$PROJECT_FOLDER/docker/install.sh
 
-  [ -f "$PROJECT_SH_FILE" ] && docker exec -it $(grep CONTAINER_NAME_API .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && sh docker/install.sh"
+  [ -f "$PROJECT_SH_FILE" ] && docker exec -it $(grep CONTAINER_NAME_PHP .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && sh docker/install.sh"
 done
