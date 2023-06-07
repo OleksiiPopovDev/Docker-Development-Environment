@@ -4,8 +4,9 @@ echo "List of installed projects:"
 echo
 
 COUNTER=0
-for project in src/*; do
-  PROJECT_NAME=$(echo $project | cut -d '/' -f2)
+
+for project in src/*/*; do
+  PROJECT_NAME=$(echo $project | cut -d '/' -f3)
   FILE_NAME=$(echo $PROJECT_NAME | awk '{print tolower($0)}')
   FILE_CONF=docker/sites/$FILE_NAME.conf
 

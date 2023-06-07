@@ -7,12 +7,12 @@ echo "Choose number of project for uninstallation:"
 read CHOOSED_PROJECT
 
 COUNTER=0
-for project in src/*; do
+for project in src/*/*; do
   if [ $COUNTER = $CHOOSED_PROJECT ]; then
 
-    PROJECT_FOLDER=$(echo $project | cut -d '/' -f2)
-    NGINX_FILE_NAME=$(echo $project | cut -d '/' -f2 | awk '{print tolower($0)}')
-    PROJECT_NAME=$(echo $project | cut -d '/' -f2 | sed 's/\-//g')
+    PROJECT_FOLDER=$(echo $project | cut -d '/' -f3)
+    NGINX_FILE_NAME=$(echo $project | cut -d '/' -f3 | awk '{print tolower($0)}')
+    PROJECT_NAME=$(echo $project | cut -d '/' -f3 | sed 's/\-//g')
     PROJECT_TYPE=$(cat .repositories | grep $PROJECT_FOLDER | cut -d ']' -f1 | cut -d '[' -f2)
 
     DOCKER_FILE_CONF=docker/sites/$NGINX_FILE_NAME.conf
@@ -35,9 +35,7 @@ for project in src/*; do
     [ -f "$DOCKER_SENTRY_DUMP" ] && rm $DOCKER_SENTRY_DUMP
     [ -f "$DOCKER_SSL_CRT" ] && rm $DOCKER_SSL_CRT
     [ -f "$DOCKER_SSL_KEY" ] && rm $DOCKER_SSL_KEY
-    [ -d "src/$PROJECT_FOLDER" ] && rm -rf src/$PROJECT_FOLDER
-    echo $DOCKER_SSL_CRT
-    echo $DOCKER_SSL_KEY
+    [ -d "$project" ] && rm -rf $project
 
     if [ "$PROJECT_TYPE" = 'PHP' ]; then
       docker-compose -f docker-compose.php.yml up --build -d

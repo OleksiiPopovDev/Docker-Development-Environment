@@ -14,4 +14,4 @@
 /src/.cache
 /src/.cache/*
 
-/src/*
+/src/*/*

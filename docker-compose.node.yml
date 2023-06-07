@@ -19,7 +19,7 @@ services:
       - "${HOST}:4200:4200"
       - "${HOST}:4201:4201"
     volumes:
-      - ./src:/var/app
+      - ./src/Node:/var/app
 
 networks:
   DevEnvNetworkExternal:

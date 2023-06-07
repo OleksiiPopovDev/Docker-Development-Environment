@@ -13,7 +13,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./src:/var/www
+      - ./src/PHP:/var/www
       - ./docker/php-ini:/usr/local/etc/php
       - ./docker/xdebug-ini/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
       - ./docker/sampler:/usr/local/etc/sampler
@@ -51,7 +51,7 @@ services:
     volumes:
       - ./docker/sites:/etc/nginx/conf.d
       - ./docker/ssl:/etc/ssl
-      - ./src:/var/www
+      - ./src/PHP:/var/www
     depends_on:
       - php
 

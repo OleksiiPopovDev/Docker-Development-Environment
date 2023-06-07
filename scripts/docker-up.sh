@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker-compose -f docker-compose.base.yml up --build -d
+docker-compose -f docker-compose.php.yml up --build -d
 
 [ ! -d "docker/databases/" ] && exit
 
