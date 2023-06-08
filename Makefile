@@ -64,7 +64,7 @@ php-restart: php-stop php-start ## Restart Docker Containers PHP
 ##@ [Node commands]
 .PHONY: node-bash
 node-bash: ## Enter to Bash of Node Container
-	@docker exec -it ${CONTAINER_NAME_NODE} /bin/bash
+	@docker exec -it ${CONTAINER_NAME_NODE} sh
 
 .PHONY: node-start
 node-start: ## Start Docker Containers Node

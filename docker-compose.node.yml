@@ -23,5 +23,5 @@ services:
 
 networks:
   DevEnvNetworkExternal:
-    external:
-      name: DevEnvNetwork
+    external: true
+    name: DevEnvNetwork

@@ -13,7 +13,8 @@ for project in src/*/*; do
     PROJECT_FOLDER=$(echo $project | cut -d '/' -f3)
     NGINX_FILE_NAME=$(echo $project | cut -d '/' -f3 | awk '{print tolower($0)}')
     PROJECT_NAME=$(echo $project | cut -d '/' -f3 | sed 's/\-//g')
-    PROJECT_TYPE=$(cat .repositories | grep $PROJECT_FOLDER | cut -d ']' -f1 | cut -d '[' -f2)
+    #PROJECT_TYPE=$(cat .repositories | grep $PROJECT_FOLDER | cut -d ']' -f1 | cut -d '[' -f2)
+    PROJECT_TYPE=$(echo $project | cut -d '/' -f2 | sed 's/\-//g')
 
     DOCKER_FILE_CONF=docker/sites/$NGINX_FILE_NAME.conf
     DOCKER_DB_CONF=docker/databases/$PROJECT_NAME.db
@@ -23,7 +24,9 @@ for project in src/*/*; do
 
     if [ "$PROJECT_TYPE" = 'PHP' ]; then
       docker-compose -f docker-compose.php.yml stop
+      docker-compose -f docker-compose.nginx.yml stop
     elif [ "$PROJECT_TYPE" = 'Node' ]; then
+      docker-compose -f docker-compose.nginx.yml stop
       docker-compose -f docker-compose.node.yml stop
     else
       echo "Can't identify project type! Please check type in .repositories like [PHP], [Node], etc."
@@ -39,7 +42,9 @@ for project in src/*/*; do
 
     if [ "$PROJECT_TYPE" = 'PHP' ]; then
       docker-compose -f docker-compose.php.yml up --build -d
+      docker-compose -f docker-compose.nginx.yml up --build -d
     elif [ "$PROJECT_TYPE" = 'Node' ]; then
+      docker-compose -f docker-compose.nginx.yml up --build -d
       docker-compose -f docker-compose.node.yml up --build -d
     fi
 

@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  nginx:
+    build:
+      context: docker/dockerfiles
+      dockerfile: NginxDocker
+      args:
+        - DOCKER_NGINX_VERSION=${DOCKER_NGINX_VERSION}
+    env_file:
+      - .env
+    container_name: ${CONTAINER_NAME_NGINX}
+    networks:
+      - DevEnvNetwork
+#    links:
+#      - mysql:database
+    expose:
+      - 80
+      - 443
+    ports:
+      - ${HOST}:${HTTP_PORT}:80
+      - ${HOST}:${HTTPS_PORT}:443
+    volumes:
+      - ./docker/sites:/etc/nginx/conf.d
+      - ./docker/ssl:/etc/ssl
+      - ./src/PHP:/var/www
+      - ./src/Node:/var/app
+
+networks:
+  DevEnvNetwork:
+    name: DevEnvNetwork
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.29.0.0/16

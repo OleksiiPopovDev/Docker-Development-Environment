@@ -72,13 +72,15 @@ for repository in $(cat .repositories); do
     cp .env.example .env &&
       echo "\n" >>.env &&
       echo "USERNAME=$(whoami)" >>.env &&
-      echo "USERID=$(id -u $(whoami))" >>.env #&&
-      #docker-compose -f docker-compose.base.yml up --build -d
+      echo "USERID=$(id -u $(whoami))" >>.env
 
 
     if [ "$PROJECT_TYPE" = 'PHP' ]; then
+      docker-compose -f docker-compose.nginx.yml stop
       docker-compose -f docker-compose.php.yml stop
+      docker-compose -f docker-compose.nginx.yml up --build -d
       docker-compose -f docker-compose.php.yml up --build -d
+      docker-compose -f docker-compose.nginx.yml start
 
       echo "Installation database"
       MYSQL_ROOT_PASS=$(grep MYSQL_ROOT_PASSWORD .env | cut -d '=' -f2)
@@ -107,8 +109,17 @@ for repository in $(cat .repositories); do
 
     if [ "$PROJECT_TYPE" = 'Node' ]; then
       docker-compose -f docker-compose.node.yml stop
-      docker-compose -f docker-compose.node.yml up --build -d
+      docker-compose -f docker-compose.nginx.yml stop
 
+      # shellcheck disable=SC2164
+      cd "$COMMON_SRC_FOLDER"/
+      sh ../../scripts/node-demon.sh
+      cd ../../
+
+      docker-compose -f docker-compose.node.yml up --build -d
+      docker-compose -f docker-compose.nginx.yml up --build -d
+
+      [ -f "$PROJECT_SH_FILE" ] && docker exec -it $(grep CONTAINER_NAME_NODE .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && sh docker/install.sh"
       exit
     fi
   fi

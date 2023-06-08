@@ -6,6 +6,9 @@ MAINTAINER Oleksii Popov <popovaleksey1991@gmail.com>
 
 WORKDIR /var/app
 
+COPY package*.json ./
+COPY . .
+
 RUN npm install -g @angular/cli
 RUN npm install --global gulp
 RUN npm install --global gulp-replace
@@ -14,4 +17,4 @@ RUN npm install --global vinyl-ftp
 RUN npm install --global child_process
 RUN npm install --global forever
 
-CMD [ "node", "frontend-fitnessserver-v2/demon.js" ]
+CMD [ "node", "demon.js" ]

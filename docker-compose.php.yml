@@ -20,7 +20,7 @@ services:
     container_name: ${CONTAINER_NAME_PHP}
     restart: unless-stopped
     networks:
-      - DevEnvNetwork
+      - DevEnvNetworkExternal
     tty: true
     stdin_open: true
     links:
@@ -30,30 +30,30 @@ services:
     depends_on:
       - mysql
 
-  nginx:
-    build:
-      context: docker/dockerfiles
-      dockerfile: NginxDocker
-      args:
-        - DOCKER_NGINX_VERSION=${DOCKER_NGINX_VERSION}
-    env_file:
-      - .env
-    container_name: ${CONTAINER_NAME_NGINX}
-    networks:
-      - DevEnvNetwork
-    links:
-      - mysql:database
-    expose:
-      - 443
-    ports:
-      - ${HOST}:${HTTP_PORT}:80
-      - ${HOST}:${HTTPS_PORT}:443
-    volumes:
-      - ./docker/sites:/etc/nginx/conf.d
-      - ./docker/ssl:/etc/ssl
-      - ./src/PHP:/var/www
-    depends_on:
-      - php
+  #  nginx:
+  #    build:
+  #      context: docker/dockerfiles
+  #      dockerfile: NginxDocker
+  #      args:
+  #        - DOCKER_NGINX_VERSION=${DOCKER_NGINX_VERSION}
+  #    env_file:
+  #      - .env
+  #    container_name: ${CONTAINER_NAME_NGINX}
+  #    networks:
+  #      - DevEnvNetwork
+  #    links:
+  #      - mysql:database
+  #    expose:
+  #      - 443
+  #    ports:
+  #      - ${HOST}:${HTTP_PORT}:80
+  #      - ${HOST}:${HTTPS_PORT}:443
+  #    volumes:
+  #      - ./docker/sites:/etc/nginx/conf.d
+  #      - ./docker/ssl:/etc/ssl
+  #      - ./src/PHP:/var/www
+  #    depends_on:
+  #      - php
 
   mysql:
     platform: linux/x86_64
@@ -66,7 +66,7 @@ services:
       - .env
     container_name: ${CONTAINER_NAME_MYSQL}
     networks:
-      - DevEnvNetwork
+      - DevEnvNetworkExternal
     ports:
       - ${HOST}:${MYSQL_PORT}:3306
     volumes:
@@ -79,12 +79,16 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 
-
 networks:
-  DevEnvNetwork:
+  DevEnvNetworkExternal:
+    external: true
     name: DevEnvNetwork
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.29.0.0/16
+
+#networks:
+#  DevEnvNetwork:
+#    name: DevEnvNetwork
+#    driver: bridge
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: 172.29.0.0/16
