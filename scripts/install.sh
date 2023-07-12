@@ -2,6 +2,23 @@
 
 . ./scripts/new-projects-list.sh
 
+function installDatabase() {
+  # shellcheck disable=SC2046
+  while ! docker exec -it $(grep CONTAINER_NAME_MYSQL .env | cut -d '=' -f2) sh -c "export MYSQL_PWD=$MYSQL_ROOT_PASSWORD; mysql -uroot < /var/databases/$DB_FILE_NAME.db" --silent; do
+    echo "Waiting 10 seconds for start of MySQL and check again!"
+    sleep 10
+    attempts=$((attempts + 1))
+    if [ $attempts = 5 ]; then
+      echo "Can't configure mysql database. Skip configuration database and continue installation? (yes/no)"
+      read SKIP_CONFIGURATI
+
+      if [ "$SKIP_CONFIGURATION" = "yes" ]; then
+        break
+      fi
+    fi
+  done
+}
+
 echo
 echo "Choose number of project for installation:"
 read CHOOSED_PROJECT
@@ -87,20 +104,7 @@ for repository in $(cat .repositories); do
       MYSQL_ROOT_PASS=$(grep MYSQL_ROOT_PASSWORD .env | cut -d '=' -f2)
 
       attempts=0
-      # shellcheck disable=SC2046
-      while ! docker exec -it $(grep CONTAINER_NAME_MYSQL .env | cut -d '=' -f2) sh -c "export MYSQL_PWD=$MYSQL_ROOT_PASS ; mysql -uroot < /var/databases/$DB_FILE_NAME.db" --silent; do
-        echo "Waiting 10 seconds for start of MySQL and check again!"
-        sleep 10
-        attempts=$((attempts + 1))
-        if [ $attempts = 5 ]; then
-          echo "Can't configure mysql database. Skip configuration database and continue installation? (yes/no)"
-          read SKIP_CONFIGURATION
-
-          if [ "$SKIP_CONFIGURATION" = "yes" ]; then
-            break
-          fi
-        fi
-      done
+      installDatabase
 
       echo "Run installation scripts of project"
       # shellcheck disable=SC2046
@@ -128,11 +132,12 @@ for repository in $(cat .repositories); do
       docker-compose -f docker-compose.mysql.yml stop
       docker-compose -f docker-compose.python.yml stop
       docker-compose -f docker-compose.nginx.yml stop
-
       docker-compose -f docker-compose.mysql.yml up --build -d
       docker-compose -f docker-compose.python.yml up --build -d
       docker-compose -f docker-compose.nginx.yml up --build -d
       docker-compose -f docker-compose.nginx.yml start
+
+      installDatabase
 
       [ -f "$PROJECT_SH_FILE" ] && docker exec -it $(grep CONTAINER_NAME_PYTHON .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && sh docker/install.sh"
       exit
