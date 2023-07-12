@@ -16,11 +16,19 @@ for repository in $(cat .repositories); do
     FILE_NAME=$(echo $repository | cut -d '/' -f2 | cut -d '.' -f1 | awk '{print tolower($0)}')
   fi
 
-  FILE_CONF=docker/sites/$FILE_NAME.conf
-  if [ ! -f "$FILE_CONF" ]; then
+  PROJECT_TYPE=$(echo $repository | cut -d ']' -f1 | cut -d '[' -f2)
+  PROJECT_FOLDER=src/$PROJECT_TYPE/$PROJECT_NAME
+
+  if [ ! -d "$PROJECT_FOLDER" ]; then
     echo "[$COUNTER] - "$PROJECT_NAME
     COUNT_READY_INSTALL=$((COUNT_READY_INSTALL + 1))
   fi
+
+  #FILE_CONF=docker/sites/$FILE_NAME.conf
+  #if [ ! -f "$FILE_CONF" ]; then
+  #  echo "[$COUNTER] - "$PROJECT_NAME
+  #  COUNT_READY_INSTALL=$((COUNT_READY_INSTALL + 1))
+  #fi
 
   COUNTER=$((COUNTER + 1))
 done

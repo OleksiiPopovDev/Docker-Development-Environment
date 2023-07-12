@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  mysql:
+    platform: linux/x86_64
+    build:
+      context: docker/dockerfiles
+      dockerfile: MysqlDocker
+      args:
+        - DOCKER_MYSQL_VERSION=${DOCKER_MYSQL_VERSION}
+    env_file:
+      - .env
+    container_name: ${CONTAINER_NAME_MYSQL}
+    networks:
+      - DevEnvNetworkExternal
+    ports:
+      - ${HOST}:${MYSQL_PORT}:3306
+    volumes:
+      - ./docker/mysql:/etc/mysql/conf.d
+      - ./docker/databases:/var/databases
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DEFAULT_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+networks:
+  DevEnvNetworkExternal:
+    external: true
+    name: DevEnvNetwork

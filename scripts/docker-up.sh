@@ -1,5 +1,7 @@
 #!/bin/bash
 
+docker-compose -f docker-compose.nginx.yml up --build -d
+docker-compose -f docker-compose.mysql.yml up --build -d
 docker-compose -f docker-compose.php.yml up --build -d
 
 [ ! -d "docker/databases/" ] && exit

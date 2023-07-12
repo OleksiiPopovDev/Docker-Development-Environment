@@ -74,11 +74,12 @@ for repository in $(cat .repositories); do
       echo "USERNAME=$(whoami)" >>.env &&
       echo "USERID=$(id -u $(whoami))" >>.env
 
-
     if [ "$PROJECT_TYPE" = 'PHP' ]; then
       docker-compose -f docker-compose.nginx.yml stop
+      docker-compose -f docker-compose.mysql.yml stop
       docker-compose -f docker-compose.php.yml stop
       docker-compose -f docker-compose.nginx.yml up --build -d
+      docker-compose -f docker-compose.mysql.yml up --build -d
       docker-compose -f docker-compose.php.yml up --build -d
       docker-compose -f docker-compose.nginx.yml start
 
@@ -120,6 +121,20 @@ for repository in $(cat .repositories); do
       docker-compose -f docker-compose.nginx.yml up --build -d
 
       [ -f "$PROJECT_SH_FILE" ] && docker exec -it $(grep CONTAINER_NAME_NODE .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && sh docker/install.sh"
+      exit
+    fi
+
+    if [ "$PROJECT_TYPE" = 'Python' ]; then
+      docker-compose -f docker-compose.mysql.yml stop
+      docker-compose -f docker-compose.python.yml stop
+      docker-compose -f docker-compose.nginx.yml stop
+
+      docker-compose -f docker-compose.mysql.yml up --build -d
+      docker-compose -f docker-compose.python.yml up --build -d
+      docker-compose -f docker-compose.nginx.yml up --build -d
+      docker-compose -f docker-compose.nginx.yml start
+
+      [ -f "$PROJECT_SH_FILE" ] && docker exec -it $(grep CONTAINER_NAME_PYTHON .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && sh docker/install.sh"
       exit
     fi
   fi
