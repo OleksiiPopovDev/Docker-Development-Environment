@@ -10,10 +10,9 @@ services:
     env_file:
       - .env
     container_name: ${CONTAINER_NAME_NGINX}
+    restart: always
     networks:
       - DevEnvNetwork
-#    links:
-#      - mysql:database
     expose:
       - 80
       - 443

@@ -3,6 +3,7 @@
 . ./scripts/new-projects-list.sh
 
 function installDatabase() {
+  [ ! -f "docker/databases/$DB_FILE_NAME.db" ] && return
   # shellcheck disable=SC2046
   while ! docker exec -it $(grep CONTAINER_NAME_MYSQL .env | cut -d '=' -f2) sh -c "export MYSQL_PWD=$MYSQL_ROOT_PASSWORD; mysql -uroot < /var/databases/$DB_FILE_NAME.db" --silent; do
     echo "Waiting 10 seconds for start of MySQL and check again!"
@@ -113,28 +114,22 @@ for repository in $(cat .repositories); do
     fi
 
     if [ "$PROJECT_TYPE" = 'Node' ]; then
-      docker-compose -f docker-compose.node.yml stop
-      docker-compose -f docker-compose.nginx.yml stop
+      docker-compose -f docker-compose.node.yml -f docker-compose.nginx.yml stop
 
       # shellcheck disable=SC2164
       cd "$COMMON_SRC_FOLDER"/
       sh ../../scripts/node-demon.sh
       cd ../../
 
-      docker-compose -f docker-compose.node.yml up --build -d
-      docker-compose -f docker-compose.nginx.yml up --build -d
+      docker-compose -f docker-compose.node.yml -f docker-compose.nginx.yml up --build -d
 
       [ -f "$PROJECT_SH_FILE" ] && docker exec -it $(grep CONTAINER_NAME_NODE .env | cut -d '=' -f2) sh -c "cd $PROJECT_FOLDER && sh docker/install.sh"
       exit
     fi
 
     if [ "$PROJECT_TYPE" = 'Python' ]; then
-      docker-compose -f docker-compose.mysql.yml stop
-      docker-compose -f docker-compose.python.yml stop
-      docker-compose -f docker-compose.nginx.yml stop
-      docker-compose -f docker-compose.mysql.yml up --build -d
-      docker-compose -f docker-compose.python.yml up --build -d
-      docker-compose -f docker-compose.nginx.yml up --build -d
+      docker-compose -f docker-compose.mysql.yml -f docker-compose.python.yml -f docker-compose.nginx.yml stop
+      docker-compose -f docker-compose.mysql.yml -f docker-compose.python.yml -f docker-compose.nginx.yml up --build -d
       docker-compose -f docker-compose.nginx.yml start
 
       installDatabase
