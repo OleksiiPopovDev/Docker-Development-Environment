@@ -80,10 +80,6 @@ node-stop: ## Stop Docker Containers Node
 node-restart: node-stop node-start ## Restart Docker Containers Node
 
 
-##@ [Python Docker Commands]
-.PHONY: python-bash
-python-bash: ## Enter to Bash of Python Container
-	@docker exec -it ${CONTAINER_NAME_PYTHON} sh
 
 ##@ [Sentry commands]
 .PHONY: sentry-install

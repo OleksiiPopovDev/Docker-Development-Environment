@@ -34,7 +34,7 @@ RUN apt update \
 RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
 RUN docker-php-ext-install gd intl pdo_mysql zip exif pcntl sockets bcmath mysqli opcache gettext
 
-RUN pecl install xdebug && docker-php-ext-enable xdebug;
+RUN pecl install -f xdebug && docker-php-ext-enable xdebug;
 
 RUN sudo -E docker-php-ext-install bcmath
 
