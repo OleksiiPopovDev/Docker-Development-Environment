@@ -2,6 +2,8 @@
 
 <p align="center">
 <img src="https://img.shields.io/github/downloads/PopovAleksey/Docker-Development-Environment/total" alt="Total Downloads">
+<a href="https://app.codacy.com/gh/OleksiiPopovDev/Docker-Development-Environment/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade"><img src="https://app.codacy.com/project/badge/Grade/0227f2f32eaa4ae192f483804e1a0fec"/></a>
+<img src="https://img.shields.io/github/downloads/PopovAleksey/Docker-Development-Environment/total" alt="Total Downloads">
 <img src="https://img.shields.io/github/license/PopovAleksey/Docker-Development-Environment" alt="License">
 <img src="https://img.shields.io/github/languages/code-size/PopovAleksey/Docker-Development-Environment" alt="Code Size">
 <img src="https://img.shields.io/github/v/release/PopovAleksey/Docker-Development-Environment" alt="Code Size">
