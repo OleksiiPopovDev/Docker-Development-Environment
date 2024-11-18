@@ -8,6 +8,10 @@
 <img src="https://img.shields.io/github/languages/code-size/PopovAleksey/Docker-Development-Environment" alt="Code Size">
 <img src="https://img.shields.io/github/v/release/PopovAleksey/Docker-Development-Environment" alt="Code Size">
 </p>
+<p align="center">
+<img src="./docs/DDE-logo.png" width="50%"  alt="Docker Development Environment"/>
+</p>
+
 
 ## How use it
 
