@@ -60,6 +60,27 @@ php-stop: ## Stop Docker Containers PHP
 php-restart: php-stop php-start ## Restart Docker Containers PHP
 
 
+##@ [Mongo commands]
+.PHONY: mongo-up
+mongo-up: ## Install the Mongo for projects
+	@docker-compose -f docker-compose.mongo.yml up --build -d
+
+.PHONY: mongo-start
+mongo-start: ## Start Mongo
+	@docker-compose -f docker-compose.mongo.yml start
+
+.PHONY: mongo-stop
+mongo-stop: ## Stop Mongo
+	@docker-compose -f docker-compose.mongo.yml stop
+
+.PHONY: mongo-restart
+mongo-restart: mongo-stop mongo-start ## Restart Mongo
+
+.PHONY: mongo-rebuild
+mongo-rebuild: ## Rebuild Container of Mongo
+	@docker-compose -f docker-compose.mongo.yml down
+	@docker-compose -f docker-compose.mongo.yml up --build -d
+
 
 ##@ [Node commands]
 .PHONY: node-bash
@@ -94,7 +115,6 @@ sentry-import: ## Import a projects to Sentry
 .PHONY: sentry-uninstall
 sentry-uninstall: ## Yahh! This is uninstalling the Sentry
 	@docker-compose -f docker-compose.sentry.yml down
-
 
 
 ##@ [Grafana commands]
